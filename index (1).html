@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d1b">
+<meta name="description" content="Play free mini games and test your computer knowledge with MiniVerse.">
+<title>MiniVerse — Play & Learn</title>
+
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#080d1b;--panel:#111a2e;--line:#24314b;
+  --text:#f4f7ff;--muted:#9aa9c4;--cyan:#54e5ff;
+  --purple:#a78bfa;--green:#77f0b0;
+}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,Arial,sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+header{
+  position:sticky;top:0;z-index:5;background:#080d1bf2;
+  border-bottom:1px solid var(--line);padding:14px 16px;
+}
+.nav{max-width:1000px;margin:auto;display:flex;
+  justify-content:space-between;align-items:center;gap:10px}
+.logo{font-size:21px;font-weight:900;letter-spacing:-1px}
+.logo span{color:var(--cyan)}
+.pill{font-size:12px;color:var(--green);border:1px solid #285c4c;
+  border-radius:30px;padding:6px 10px}
+main{max-width:1000px;margin:auto;padding:22px 16px 40px}
+.hero{
+  padding:28px 21px;border:1px solid #283a5e;border-radius:24px;
+  background:radial-gradient(ellipse at 90% 10%,#4d3b944d,transparent 45%),
+  linear-gradient(135deg,#142746,#10152c 75%);
+}
+.tag{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:2px}
+h1{font-size:clamp(32px,7vw,49px);line-height:1.1;
+  margin:13px 0}
+h1 span{color:var(--cyan)}
+p{line-height:1.6}
+.muted{color:var(--muted)}
+.primary{
+  background:var(--cyan);color:#071321;font-weight:800;
+  border:0;padding:12px 17px;border-radius:11px;
+}
+.secondary{
+  background:#1a2740;color:white;border:1px solid #34435f;
+  padding:10px 14px;border-radius:10px;
+}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);
+  gap:9px;margin:18px 0 30px}
+.stat{background:var(--panel);border:1px solid var(--line);
+  padding:13px 6px;border-radius:13px;text-align:center}
+.stat strong{display:block;font-size:20px;color:var(--cyan)}
+.stat small{color:var(--muted);font-size:11px}
+.section-head{display:flex;justify-content:space-between;
+  align-items:center;gap:10px;margin:25px 0 14px}
+h2{font-size:21px;margin:0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:17px;padding:16px;min-width:0;
+}
+.game-icon{font-size:31px;margin-bottom:8px}
+.card h3{margin:3px 0 6px;font-size:16px}
+.card p{font-size:12px;color:var(--muted);margin:0 0 14px}
+.card button{width:100%}
+.wide{grid-column:1/-1}
+.gamebox{margin-top:18px;display:none}
+.gamebox.active{display:block}
+.gamebox input{
+  width:100%;background:#080f20;border:1px solid #34435f;
+  color:white;border-radius:10px;padding:12px;margin:8px 0;
+}
+.result{color:var(--green);min-height:25px;font-weight:700}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.options button{text-align:left}
+footer{border-top:1px solid var(--line);text-align:center;
+  padding:25px 15px;color:var(--muted);font-size:12px}
+@media(min-width:650px){
+  .cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hero{padding:40px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">🎮 Mini<span>Verse</span></div>
+    <div class="pill">● FREE TO PLAY</div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="tag">YOUR DAILY FUN ZONE</div>
+    <h1>Play Smart.<br><span>Think Faster.</span></h1>
+    <p class="muted">Play mini games, beat your best score and test your BCA knowledge — all in one place.</p>
+    <button class="primary" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">
+      Explore Games ↘
+    </button>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><strong>🎯</strong><small>Challenge Yourself</small></div>
+    <div class="stat"><strong>🧠</strong><small>Learn & Improve</small></div>
+    <div class="stat"><strong id="totalScore">0</strong><small>Your Points</small></div>
+  </section>
+
+  <div class="section-head" id="games">
+    <h2>🔥 Choose Your Game</h2>
+  </div>
+
+  <section class="cards">
+    <article class="card">
+      <div class="game-icon">🔢</div>
+      <h3>Number Guess</h3>
+      <p>Can you find the secret number from 1 to 20?</p>
+      <button class="secondary" onclick="openGame('guessGame')">Play Now →</button>
+    </article>
+
+    <article class="card">
+      <div class="game-icon">⚡</div>
+      <h3>Quick Math</h3>
+      <p>Solve a maths question and test your speed.</p>
+      <button class="secondary" onclick="openGame('mathGame');newMath()">Play Now →</button>
+    </article>
+
+    <article class="card">
+      <div class="game-icon">💻</div>
+      <h3>BCA Quiz</h3>
+      <p>Test your HTML, CSS and computer knowledge.</p>
+      <button class="secondary" onclick="openGame('quizGame');newQuiz()">Start Quiz →</button>
+    </article>
+
+    <article class="card">
+      <div class="game-icon">✊</div>
+      <h3>Rock Paper Scissors</h3>
+      <p>Challenge the computer in a quick match.</p>
+      <button class="secondary" onclick="openGame('rpsGame')">Play Now →</button>
+    </article>
+
+    <article class="card">
+      <div class="game-icon">🧩</div>
+      <h3>Memory Challenge</h3>
+      <p>Remember the pattern and repeat it correctly.</p>
+      <button class="secondary" onclick="openGame('memoryGame');startMemory()">Play Now →</button>
+    </article>
+
+    <article class="card">
+      <div class="game-icon">🏆</div>
+      <h3>My Score</h3>
+      <p>Earn points by playing games and answering correctly.</p>
+      <button class="secondary" onclick="showScore()">View Score →</button>
+    </article>
+  </section>
+
+  <section class="card gamebox" id="guessGame">
+    <div class="section-head"><h2>🔢 Number Guess</h2><button class="secondary" onclick="closeGames()">✕</button></div>
+    <p>Enter a whole number between 1 and 20.</p>
+    <input id="guessInput" type="number" min="1" max="20" placeholder="Your guess">
+    <button class="primary" onclick="guessNumber()">Check Answer</button>
+    <p class="result" id="guessResult"></p>
+    <button class="secondary" onclick="resetGuess()">New Number</button>
+  </section>
+
+  <section class="card gamebox" id="mathGame">
+    <div class="section-head"><h2>⚡ Quick Math</h2><button class="secondary" onclick="closeGames()">✕</button></div>
+    <h3 id="mathQuestion">Ready?</h3>
+    <input id="mathInput" type="number" placeholder="Your answer">
+    <button class="primary" onclick="checkMath()">Submit Answer</button>
+    <p class="result" id="mathResult"></p>
+    <button class="secondary" onclick="newMath()">Next Question</button>
+  </section>
+
+  <section class="card gamebox" id="quizGame">
+    <div class="section-head"><h2>💻 BCA Quiz</h2><button class="secondary" onclick="closeGames()">✕</button></div>
+    <p id="quizProgress" class="muted"></p>
+    <h3 id="quizQuestion"></h3>
+    <div class="options" id="quizOptions"></div>
+    <p class="result" id="quizResult"></p>
+    <button class="secondary" id="nextQuiz" onclick="newQuiz()" style="display:none">Next Question →</button>
+  </section>
+
+  <section class="card gamebox" id="rpsGame">
+    <div class="section-head"><h2>✊ Rock Paper Scissors</h2><button class="secondary" onclick="closeGames()">✕</button></div>
+    <p>Choose your move!</p>
+    <div class="options">
+      <button class="secondary" onclick="playRPS('Rock')">✊ Rock</button>
+      <button class="secondary" onclick="playRPS('Paper')">✋ Paper</button>
+      <button class="secondary wide" onclick="playRPS('Scissors')">✌️ Scissors</button>
+    </div>
+    <p class="result" id="rpsResult"></p>
+  </section>
+
+  <section class="card gamebox" id="memoryGame">
+    <div class="section-head"><h2>🧩 Memory Challenge</h2><button class="secondary" onclick="closeGames()">✕</button></div>
+    <p id="memoryInstructions">Memorize the number sequence, then enter it.</p>
+    <h2 id="memorySequence" style="color:var(--cyan);letter-spacing:5px">Ready?</h2>
+    <input id="memoryInput" placeholder="Type the sequence">
+    <button class="primary" onclick="checkMemory()">Check Pattern</button>
+    <p class="result" id="memoryResult"></p>
+    <button class="secondary" onclick="startMemory()">Try New Pattern</button>
+  </section>
+</main>
+
+<footer>
+  <p>🎮 MiniVerse — Play, Learn & Have Fun</p>
+  <p>Made with HTML, CSS & JavaScript</p>
+  <p>© 2026 MiniVerse</p>
+</footer>
+
+<script>
+let points = 0;
+let secretNumber = makeSecret();
+let mathAnswer = 0;
+let quizIndex = 0;
+let quizLocked = false;
+let memoryPattern = '';
+
+function makeSecret(){
+  return Math.floor(Math.random()*20)+1;
+}
+
+function updateScore(amount){
+  points += amount;
+  document.getElementById('totalScore').textContent = points;
+}
+
+function openGame(id){
+  closeGames();
+  const game = document.getElementById(id);
+  game.classList.add('active');
+  game.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function closeGames(){
+  document.querySelectorAll('.gamebox').forEach(el=>el.classList.remove('active'));
+}
+
+function showScore(){
+  alert('Your total score is '+points+' points!');
+}
+
+function resetGuess(){
+  secretNumber = makeSecret();
+  document.getElementById('guessInput').value = '';
+  document.getElementById('guessResult').textContent = 'New number ready!';
+}
+
+function guessNumber(){
+  const input = document.getElementById('guessInput');
+  const value = Number(input.value);
+  const result = document.getElementById('guessResult');
+
+  if(input.value.trim()==='' || !Number.isInteger(value) || value<1 || value>20){
+    result.textContent = 'Enter a whole number from 1 to 20.';
+    return;
+  }
+  if(value===secretNumber){
+    result.textContent = '🎉 Correct! +10 points. New number ready!';
+    updateScore(10);
+    secretNumber = makeSecret();
+    input.value = '';
+  }else{
+    result.textContent = value<secretNumber ? '📈 Try a higher number!' : '📉 Try a lower number!';
+  }
+}
+
+function newMath(){
+  const a = Math.floor(Math.random()*12)+1;
+  const b = Math.floor(Math.random()*12)+1;
+  const ops = ['+','-','×'];
+  const op = ops[Math.floor(Math.random()*ops.length)];
+  mathAnswer = op==='+' ? a+b : op==='-' ? a-b : a*b;
+  document.getElementById('mathQuestion').textContent = a+' '+op+' '+b+' = ?';
+  document.getElementById('mathInput').value = '';
+  document.getElementById('mathResult').textContent = '';
+}
+
+function checkMath(){
+  const input = document.getElementById('mathInput');
+  const result = document.getElementById('mathResult');
+  if(input.value.trim()===''){
+    result.textContent = 'Enter your answer first.';
+    return;
+  }
+  if(Number(input.value)===mathAnswer){
+    result.textContent = 'Correct! +5 points 🎉';
+    updateScore(5);
+    newMath();
+  }else{
+    result.textContent = 'Not quite! Try again.';
+  }
+}
+
+const questions = [
+  {q:'Which language styles a web page?',a:['HTML','CSS','C','SQL'],correct:1},
+  {q:'Which tag creates a hyperlink in HTML?',a:['<p>','<img>','<a>','<h1>'],correct:2},
+  {q:'Which symbol ends a C statement?',a:[';',':','!','#'],correct:0},
+  {q:'What does CPU stand for?',a:['Central Processing Unit','Computer Personal Unit','Control Program Utility','Central Print Unit'],correct:0},
+  {q:'Which language adds interactivity to web pages?',a:['CSS','JavaScript','HTML only','SQL'],correct:1},
+  {q:'Which data type stores whole numbers in C?',a:['int','char','void','double only'],correct:0}
+];
+
+function newQuiz(){
+  quizLocked = false;
+  const q = questions[quizIndex % questions.length];
+  document.getElementById('quizProgress').textContent =
+    'Question '+(quizIndex%questions.length+1)+' of '+questions.length;
+  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('quizResult').textContent = '';
+  document.getElementById('nextQuiz').style.display = 'none';
+  const box = document.getElementById('quizOptions');
+  box.innerHTML = '';
+  q.a.forEach((answer,index)=>{
+    const btn = document.createElement('button');
+    btn.className = 'secondary';
+    btn.textContent = answer;
+    btn.onclick = ()=>answerQuiz(index);
+    box.appendChild(btn);
+  });
+}
+
+function answerQuiz(index){
+  if(quizLocked) return;
+  quizLocked = true;
+  const q = questions[quizIndex % questions.length];
+  if(index===q.correct){
+    document.getElementById('quizResult').textContent = 'Correct! +10 points 🎉';
+    updateScore(10);
+  }else{
+    document.getElementById('quizResult').textContent =
+      'Not quite. Correct answer: '+q.a[q.correct];
+  }
+  document.getElementById('nextQuiz').style.display = 'inline-block';
+  quizIndex++;
+}
+
+function playRPS(player){
+  const moves = ['Rock','Paper','Scissors'];
+  const computer = moves[Math.floor(Math.random()*3)];
+  let msg = 'You: '+player+' | Computer: '+computer+'. ';
+  if(player===computer) msg += 'Draw!';
+  else if(
+    (player==='Rock'&&computer==='Scissors')||
+    (player==='Paper'&&computer==='Rock')||
+    (player==='Scissors'&&computer==='Paper')
+  ){
+    msg += 'You win! +5 points 🎉';
+    updateScore(5);
+  }else msg += 'Computer wins. Try again!';
+  document.getElementById('rpsResult').textContent = msg;
+}
+
+function startMemory(){
+  memoryPattern = Array.from({length:4},()=>Math.floor(Math.random()*10)).join('');
+  const display = document.getElementById('memorySequence');
+  const input = document.getElementById('memoryInput');
+  const result = document.getElementById('memoryResult');
+  input.value = '';
+  result.textContent = '';
+  document.getElementById('memoryInstructions').textContent =
+    'Memorize the sequence before it disappears!';
+  display.textContent = memoryPattern;
+  input.disabled = true;
+  setTimeout(()=>{
+    display.textContent = '????';
+    document.getElementById('memoryInstructions').textContent =
+      'Now type the 4 digits you saw.';
+    input.disabled = false;
+    input.focus();
+  },2500);
+}
+
+function checkMemory(){
+  const input = document.getElementById('memoryInput');
+  const result = document.getElementById('memoryResult');
+  if(input.disabled || input.value.trim()===''){
+    result.textContent = 'Wait for the sequence, then enter it.';
+    return;
+  }
+  if(input.value.trim()===memoryPattern){
+    result.textContent = 'Amazing memory! +10 points 🎉';
+    updateScore(10);
+    input.disabled = true;
+  }else{
+    result.textContent = 'Not quite. Try a new pattern!';
+  }
+}
+</script>
+</body>
+</html>
